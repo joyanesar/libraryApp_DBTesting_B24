@@ -3,11 +3,14 @@ package com.cydeo.steps;
 import com.cydeo.pages.BookPage;
 import com.cydeo.pages.DashBoardPage;
 import com.cydeo.utility.BrowserUtil;
+import com.cydeo.utility.DB_Util;
+import com.mysql.cj.Query;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.Assert;
 
 import java.util.List;
+import java.util.Map;
 
 public class BooksStepDefs {
     BookPage bookPage=new BookPage();
@@ -49,5 +52,61 @@ public class BooksStepDefs {
     }
 
 
+    @Then("verify book categories must match book categories table from db")
+    public void verifyBookCategoriesMustMatchBookCategoriesTableFromDb() {
 
+        String query = "select name from book_categories";
+        DB_Util.createConnection();
+        //get data
+
+        DB_Util.runQuery(query);
+
+        // get Data
+        List<String> expectedCategoryList = DB_Util.getColumnDataAsList(1);
+
+        // Assertions
+        Assert.assertEquals(expectedCategoryList, actualCategoryList);
+
+
+    }
+
+    @Then("book information must match the database for {string}")
+    public void bookInformationMustMatchTheDatabaseFor(String bookName) {
+
+      BrowserUtil.waitFor(1);
+      //get UI book INFO
+        String actualBookName = bookPage.bookName.getAttribute("value");
+        String actualAuthor=bookPage.author.getAttribute("value");
+        String actualISBN=bookPage.isbn.getAttribute("value");
+        String actualYear = bookPage.year.getAttribute("value");
+        String actualDesc = bookPage.description.getAttribute("value");
+
+        System.out.println("actualDesc = " + actualDesc);
+
+
+        //get DB book INFO
+        String query ="select name,isbn,year,author,description from books\n" + "where name='"+bookName+"'";
+      //  String query ="select name,isbn,year,author,description from books\n" + "where name='"+bookName+"'";
+        DB_Util.runQuery(query);
+
+        Map<String,String> dbData= DB_Util.getRowMap(1);
+        System.out.println("dbData = " + dbData);
+
+        String expectedBookName = dbData.get("name");
+        String expectedAuthor = dbData.get("author");
+        String expectedISBN = dbData.get("isbn");
+        String expectedYear = dbData.get("year");
+        String expectedDesc = dbData.get("description");
+
+
+        //Compare
+
+        Assert.assertEquals(expectedBookName,actualBookName);
+        Assert.assertEquals(expectedAuthor,actualAuthor);
+        Assert.assertEquals(expectedISBN,actualISBN);
+        Assert.assertEquals(expectedYear,actualYear);
+        Assert.assertEquals(expectedDesc,actualDesc);
+
+
+    }
 }

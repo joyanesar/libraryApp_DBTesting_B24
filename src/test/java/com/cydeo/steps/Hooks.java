@@ -1,6 +1,7 @@
 package com.cydeo.steps;
 
 import com.cydeo.utility.ConfigurationReader;
+import com.cydeo.utility.DB_Util;
 import com.cydeo.utility.Driver;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
@@ -33,5 +34,17 @@ public class Hooks {
         Driver.closeBrowser();
 
     }
+    @Before("@db")
+    public void setupDB(){
+        DB_Util.createConnection();
+        System.out.println("Conncetiong database......");
+    }
+
+
+    @After("@db")
+    public void destroyDB(){
+        System.out.println("Closing database connection .....");
+    }
 
 }
+

@@ -27,3 +27,27 @@ Feature: Book Category
       | Memoir                  |
       | Poetry                  |
 
+    @wip@db
+  Scenario: verify book categories with DB
+    Given the user logged in as "librarian"
+    When the user navigates to "Books" page
+    And the user gets all book categories in webpage
+    Then verify book categories must match book categories table from db
+
+@wip@db
+  Scenario: Verify book information with db
+    Given the user logged in as "librarian"
+    And the user navigates to "Books" page
+    When I open book "Clean Code"
+    Then book information must match the database for "Clean Code"
+
+  #As a librarian
+
+    #ADD BOOK and verify with DB
+      # Login as libarain
+      # Click books
+      # Add Books
+      # Fill the ralted field
+      # Check this book is added DB
+
+     #UPDATE BOOK and verfiy with DB
